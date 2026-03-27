@@ -1,0 +1,9 @@
+name = "image-background-remover"
+compatibility_date = "2024-01-01"
+pages_projects = [
+  {
+    name = "image-background-remover",
+    branch = "main",
+    config_dir = "./functions",
+  }
+]

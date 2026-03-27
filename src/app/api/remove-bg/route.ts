@@ -32,11 +32,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert to base64
-    const arrayBuffer = await imageFile.arrayBuffer();
-    const base64 = Buffer.from(arrayBuffer).toString("base64");
-    const dataUri = `data:${imageFile.type};base64,${base64}`;
-
     // Call Remove.bg API
     const removeBgApiKey = process.env.REMOVE_BG_API_KEY;
     
@@ -47,16 +42,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Build Remove.bg request using FormData
+    const removeBgFormData = new FormData();
+    removeBgFormData.append("image_file", imageFile);
+    removeBgFormData.append("size", "auto");
+    removeBgFormData.append("format", "png");
+
     const removeBgResponse = await fetch("https://api.remove.bg/v1.0/removebg", {
       method: "POST",
       headers: {
         "X-Api-Key": removeBgApiKey,
       },
-      body: {
-        image_file_b64: base64,
-        size: "auto",
-        format: "png",
-      } as any,
+      body: removeBgFormData,
     });
 
     if (!removeBgResponse.ok) {
